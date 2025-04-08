@@ -7,11 +7,12 @@ import asyncio
 import pytz
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
+from channel_id import BOT_CHANNEL_ID
 
  
 class EventBot(commands.Bot):
     def __init__(self):
-        self.channel_id = 1326788129872543755
+        self.channel_id = BOT_CHANNEL_ID
         intents = discord.Intents.default()
         intents.message_content = True
         super().__init__(command_prefix='/', intents=intents)
@@ -19,6 +20,7 @@ class EventBot(commands.Bot):
         self.events_file = 'events.json'
         self.events = self.load_events()
         self.next_event = self.find_next_event()
+        print('I am constructed')
         #bot.sync_commands()
         #bot.get_channel(1326788129872543755).send("🤖 Bot is waking up!")
 
@@ -50,6 +52,20 @@ class EventBot(commands.Bot):
             return None
         return min(upcoming_events, key=lambda x: datetime.fromisoformat(x['event_time']))
 
+    async def on_ready(self):
+        """Event handler that runs when the bot is ready and connected"""
+        print(f"Bot connected as {self.user.name} ({self.user.id})")
+        
+        # Send a message to the bot channel to confirm bot is online
+        bot_channel = self.get_channel(BOT_CHANNEL_ID)
+        # if bot_channel:
+            # await bot_channel.send("✅ Event Bot is now online and ready for commands!")
+            # if self.next_event:
+            #     await bot_channel.send(f"Next upcoming event: {self.next_event['message']} at {self.next_event['event_time']}")
+            # else:
+            #     await bot_channel.send("No upcoming events scheduled.")
+        # else:
+        #     print(f"WARNING: Could not find channel with ID {BOT_CHANNEL_ID}")
    
     async def setup_hook(self):
         # Add commands to the tree
@@ -71,6 +87,7 @@ class EventBot(commands.Bot):
                         tags: str = None,
                         reminders: str = None):
         """Add a new event"""
+        print(locals())
         try:
             # Validate and convert inputs
             event_datetime = datetime.fromisoformat(event_time).replace(tzinfo=pytz.UTC)
@@ -98,7 +115,7 @@ class EventBot(commands.Bot):
             self.next_event = self.find_next_event()
             await interaction.response.send_message(f"Event added successfully: {message}")
         except Exception as e:
-            await interaction.response.send_message(f"Error adding event: {str(e)}")
+            await interaction.response.send_message(f"Error adding event: {str(e)}", ephemeral=True)
 
     @app_commands.command(name="deleteevent")
     @app_commands.checks.has_permissions(manage_events=True)
@@ -159,7 +176,8 @@ async def main():
             print("\n🌙 Shutting down bot...")
             # Send goodbye message to a specific channel (replace CHANNEL_ID)
             try:
-                await bot.get_channel(1326788129872543755).send("I am going for a nap...")
+                # await bot.get_channel(1326788129872543755).send("I am going for a nap...")
+                print('done')
                 
             except Exception:
 
