@@ -3,7 +3,7 @@ from discord.ext import commands, tasks
 from discord import app_commands
 import json
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta,timezone
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -105,6 +105,7 @@ async def on_ready():
     # await bot.tree.sync(guild=discord.Object(id=GUILD_ID))
     await bot.tree.sync()
     await schedule_next_event()
+    await bot.get_channel(1326788129872543755).send("🤖 Bot is waking up!")
 
 @bot.tree.command(name="addevent", description="Add a reminder event")
 @app_commands.describe(message="Reminder message", time="Time in HH:MM UTC", repeat_hours="(Optional) Hours after which to repeat", reminders="(Optional)Minutes before to remind, comma separated (e.g. 15,10,5)")
@@ -160,8 +161,9 @@ async def whatsnext(interaction: discord.Interaction):
     if not next_event:
         await interaction.response.send_message("No upcoming events.")
         return
-
+    date_thing = datetime.strptime(next_event['time'], "%Y-%m-%d %H:%M")
+    date_thing = date_thing.replace(tzinfo=timezone.utc)
     await interaction.response.send_message(
-        f"{next_event['message']} in {next_event['time']} UTC")
+        f"{next_event['message']} <t:{int(date_thing.timestamp())}:R>")
 
 bot.run(TOKEN)
