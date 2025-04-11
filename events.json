@@ -19,5 +19,21 @@
             5
         ],
         "repeat_hours": 48
+    },
+    {
+        "message": "Fortress battles for 1 and 6",
+        "time": "2025-04-11 13:00",
+        "channel_id": 1326788129872543755,
+        "reminders": [
+            0
+        ]
+    },
+    {
+        "message": "Stronghold 4",
+        "time": "2025-04-11 14:00",
+        "channel_id": 1326788129872543755,
+        "reminders": [
+            10
+        ]
     }
 ]
