@@ -1,12 +1,1 @@
-[
-    {
-        "message": "Bear trap 2",
-        "time": "2025-04-13 12:00",
-        "channel_id": 1326788129872543755,
-        "reminders": [
-            10,
-            5
-        ],
-        "repeat_hours": 48
-    }
-]
+[]

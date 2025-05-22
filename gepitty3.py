@@ -16,6 +16,7 @@ ALLOWED_ROLES = ["MOD", "leadership"]
 intents = discord.Intents.default()
 intents.guilds = True
 intents.members = True  # Required for role checks
+intents.message_content = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
