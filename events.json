@@ -1,16 +1,5 @@
 [
     {
-        "message": "Crazy Joe",
-        "time": "2025-04-08 18:00",
-        "channel_id": 1326788129872543755,
-        "reminders": [
-            600,
-            480,
-            240,
-            10
-        ]
-    },
-    {
         "message": "Bear trap 2",
         "time": "2025-04-13 12:00",
         "channel_id": 1326788129872543755,
@@ -19,21 +8,5 @@
             5
         ],
         "repeat_hours": 48
-    },
-    {
-        "message": "Fortress battles for 1 and 6",
-        "time": "2025-04-11 13:00",
-        "channel_id": 1326788129872543755,
-        "reminders": [
-            0
-        ]
-    },
-    {
-        "message": "Stronghold 4",
-        "time": "2025-04-11 14:00",
-        "channel_id": 1326788129872543755,
-        "reminders": [
-            10
-        ]
     }
 ]

@@ -35,12 +35,19 @@ def save_events():
 
 # Helper to get next event
 def get_next_event():
+    global events
+    #print('In get next event')
     now = datetime.utcnow()
     upcoming = sorted(events, key=lambda e: e['time'])
     for event in upcoming:
         event_time = datetime.strptime(event['time'], "%Y-%m-%d %H:%M")
         if event_time > now:
             return event
+        else:
+            #print(event)
+            #print('Now removing')
+            events = [i for i in events if i != event]
+            save_events()
     return None
 
 # Helper to schedule the next reminder
@@ -105,7 +112,7 @@ async def on_ready():
     # await bot.tree.sync(guild=discord.Object(id=GUILD_ID))
     await bot.tree.sync()
     await schedule_next_event()
-    await bot.get_channel(1326788129872543755).send("🤖 Bot is waking up!")
+    #await bot.get_channel(1326788129872543755).send("🤖 Bot is waking up!")
 
 @bot.tree.command(name="addevent", description="Add a reminder event")
 @app_commands.describe(message="Reminder message", time="Time in HH:MM UTC", repeat_hours="(Optional) Hours after which to repeat", reminders="(Optional)Minutes before to remind, comma separated (e.g. 15,10,5)")
@@ -130,7 +137,7 @@ async def addevent(interaction: discord.Interaction, message: str, time: str, re
     }
     if repeat_hours:
         event["repeat_hours"] = repeat_hours
-
+    
     events.append(event)
     save_events()
     await schedule_next_event()
