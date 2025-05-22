@@ -34,21 +34,23 @@ def save_events():
         json.dump(events, f, indent=4)
 
 # Helper to get next event
-def get_next_event():
+def get_next_event(limit = 1):
     global events
     #print('In get next event')
     now = datetime.utcnow()
     upcoming = sorted(events, key=lambda e: e['time'])
+    next_events = []
     for event in upcoming:
         event_time = datetime.strptime(event['time'], "%Y-%m-%d %H:%M")
-        if event_time > now:
-            return event
+        if (event_time > now) and (len(next_events) >= limit):
+            next_events.append(event)
         else:
             #print(event)
             #print('Now removing')
             events = [i for i in events if i != event]
             save_events()
-    return None
+    return next_events
+    #return None
 
 # Helper to schedule the next reminder
 async def schedule_next_event():
@@ -60,6 +62,8 @@ async def schedule_next_event():
     next_event = get_next_event()
     if not next_event:
         return
+    else:
+        next_event = next_event[0]
 
     event_time = datetime.strptime(next_event['time'], "%Y-%m-%d %H:%M")
     reminder_offsets = next_event.get("reminders", [0])
@@ -115,8 +119,8 @@ async def on_ready():
     #await bot.get_channel(1326788129872543755).send("🤖 Bot is waking up!")
 
 @bot.tree.command(name="addevent", description="Add a reminder event")
-@app_commands.describe(message="Reminder message", time="Time in HH:MM UTC", repeat_hours="(Optional) Hours after which to repeat", reminders="(Optional)Minutes before to remind, comma separated (e.g. 15,10,5)")
-async def addevent(interaction: discord.Interaction, message: str, time: str, repeat_hours: int = None, reminders: str = "0"):
+@app_commands.describe(message="Reminder message", time="Time in HH:MM UTC",tags="(Optional) Roles to tag" ,repeat_hours="(Optional) Hours after which to repeat", reminders="(Optional)Minutes before to remind, comma separated (e.g. 15,10,5)")
+async def addevent(interaction: discord.Interaction, message: str, time: str,tags: str, repeat_hours: int = None, reminders: str = "0"):
     if not await is_allowed(interaction):
         await interaction.response.send_message("You do not have permission to use this command.", ephemeral=True)
         return
